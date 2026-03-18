@@ -75,6 +75,7 @@ logs/
 # --- Editor / IDE ---
 # Zed project metadata
 .zed/
+/.zed/
 
 # VS Code
 .vscode/
