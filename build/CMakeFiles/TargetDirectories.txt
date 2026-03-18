@@ -1,3 +1,0 @@
-/home/wakiaki/Projects/VulkanFramework2D/build/CMakeFiles/VulkanFramework2D.dir
-/home/wakiaki/Projects/VulkanFramework2D/build/CMakeFiles/edit_cache.dir
-/home/wakiaki/Projects/VulkanFramework2D/build/CMakeFiles/rebuild_cache.dir
