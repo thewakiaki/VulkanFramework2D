@@ -1,0 +1,19 @@
+// pch.h
+#pragma once
+
+#include <vulkan/vulkan.h>
+#include <vulkan/vulkan_core.h>
+#include <vulkan/vulkan.hpp>
+#include <vulkan/vulkan_raii.hpp>
+#include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <iostream>
+#include <vector>
+#include <array>
+#include <memory>
+#include <string>
+#include <format>
+#include <exception>
+#include <cstdlib>
