@@ -21,7 +21,7 @@ bool Game::Startup(){
 
     Logs::Print("Game Starting");
 
-    if(!mVulkanInstance->SetupVulkanInstance()) { return false; }
+    if(!InitVulkan()) { return false; }
 
     return true;
 }
@@ -38,6 +38,8 @@ void Game::Cleanup(){
 bool Game::InitVulkan(){
 
     if(!mVulkanInstance->SetupVulkanInstance()) { return false; }
+
+    Logs::Print("All Vulkan Components Setup");
 
     return true;
 }
