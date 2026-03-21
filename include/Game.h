@@ -1,6 +1,7 @@
 #pragma once
 
 class VulkanInstance;
+class AppWindow;
 
 class Game{
 public:
@@ -17,5 +18,6 @@ private:
 
     bool InitVulkan();
 
+    std::unique_ptr<AppWindow> mAppWindow;
     std::unique_ptr<VulkanInstance> mVulkanInstance;
 };

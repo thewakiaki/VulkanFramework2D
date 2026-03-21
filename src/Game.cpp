@@ -1,8 +1,11 @@
 #include "Game.h"
 #include "Logs.h"
+
+#include "AppWindow.h"
 #include "VulkanInstance.h"
 
 Game::Game(){
+    mAppWindow = std::make_unique<AppWindow>();
     mVulkanInstance = std::make_unique<VulkanInstance>();
 }
 
