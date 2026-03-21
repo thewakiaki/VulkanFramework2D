@@ -13,6 +13,7 @@ Desktop.ini
 
 # --- Build outputs ---
 /build/
+/build-debug/
 /cmake-build-*/
 /out/
 /bin/
