@@ -15,22 +15,33 @@ public:
 
     bool SetupPhysicalDevice(const VulkanInstance& instance);
 
-    [[nodiscard]] const VkPhysicalDevice& GetSelectedDevice() const { return mSelectedDevice; }
+    [[nodiscard]] const VulkanStructs::PhysicalDeviceDetails& GetSelectedDevice() const { return mSelectedDevice; }
+    [[nodiscard]] const std::vector<VkDeviceQueueCreateInfo>& GetQueueCreateInfo() const { return mQueueCreateInfos; }
+
 
 private:
     bool GetDeviceScores(const VulkanInstance& instance);
 
-    bool CheckSuitable(const VkPhysicalDeviceProperties& properties, const VkPhysicalDeviceFeatures& features);
+    bool CheckSuitable(const VkPhysicalDevice& device, const VkPhysicalDeviceProperties& properties);
     uint32_t ScoreDevice(const VkPhysicalDeviceProperties& properties, const VkPhysicalDeviceFeatures& features);
-
     void SelectBestDevice();
 
-    void Cleanup();
+    bool CheckQueueSupport(const VkPhysicalDevice& device, size_t& graphicsQueueIndex, size_t& presentQueueIndex);
+    bool CheckExtensionSupport(const VkPhysicalDevice& device);
+    bool CheckDeviceProperties(const VkPhysicalDeviceProperties& properties);
+    bool CheckDeviceFeatures(const VkPhysicalDevice& device);
 
-    VkPhysicalDevice mSelectedDevice = VK_NULL_HANDLE;
+    void SetQueues();
 
-    std::vector<VulkanStructs::PhysicalDeviceDetails> mAvailableDevices;
+    VulkanStructs::PhysicalDeviceDetails mSelectedDevice;
 
     uint32_t mPhyiscalDeviceCount = 0;
+    std::vector<VulkanStructs::PhysicalDeviceDetails> mAvailableDevices;
+
+    std::vector<const char*> mRequiredExtensions;
+
+    VkQueue mGraphicsQueue;
+    VkQueue mPresentQueue;
+    std::vector<VkDeviceQueueCreateInfo> mQueueCreateInfos;
 
 };
