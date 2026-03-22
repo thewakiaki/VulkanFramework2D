@@ -1,6 +1,7 @@
 #pragma once
 
-#include "VulkanStructs.h"
+//Change to false to disable validation layers // デバッグ用のレイヤーをいらない場合falseに変えてください
+constexpr bool enableValidationLayers = true;
 
 class VulkanInstance{
 
@@ -11,6 +12,8 @@ public:
     VulkanInstance(const VulkanInstance&) = delete;
     VulkanInstance& operator=(const VulkanInstance&) = delete;
 
+    [[nodiscard]] const VkInstance& GetInstance() const { return mVulkanInstance; }
+
     bool SetupVulkanInstance();
 
 private:
@@ -18,20 +21,27 @@ private:
 
     bool SetupExtensions();
 
-    vk::InstanceCreateInfo SetInstanceCreateInfo();
+    bool SetupLayers();
 
-    void ViewFlaggedExtensions();
+    void SetInstanceCreateInfo();
 
-    vk::Instance mVulkanInstance;
+    void ViewValidatedExtensions();
+    void ViewValidatedLayers();
+
+    VkInstance mVulkanInstance = VK_NULL_HANDLE;
+    VkInstanceCreateInfo mCreateInfo{};
+    VkApplicationInfo mAppInfo{};
 
     const char* mGameName = "Game Name";
     const char* mEngineName = "Engine Name";
 
     uint32_t mVkExtensionCount = 0;
-    std::vector<VulkanStructs::ExtensionFlags> mExtensionFlags;
+    std::vector<const char*> mValidatedExtensions;
     std::vector<VkExtensionProperties> mAvailableExtensions;
     std::vector<const char*> mRequiredExtensions;
 
-    const std::vector<char const*> mValidationLayers = { "VK_LAYER_KHRONOS_validation" };
-
+    uint32_t mVkLayerCount = 0;
+    std::vector<const char*> mValidatedLayers;
+    std::vector<VkLayerProperties> mAvailableLayers;
+    std::vector<const char*> mRequiredLayers;
 };

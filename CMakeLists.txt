@@ -22,6 +22,7 @@ add_executable(${PROJECT_NAME}
     src/Game.cpp
     src/AppWindow.cpp
     src/VulkanInstance.cpp
+    src/VulkanPhysicalDevice.cpp
 )
 
 set(PCH_INCLUDE_HEADERS pch.h)

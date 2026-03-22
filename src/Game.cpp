@@ -3,10 +3,12 @@
 
 #include "AppWindow.h"
 #include "VulkanInstance.h"
+#include "VulkanPhysicalDevice.h"
 
 Game::Game(){
     mAppWindow = std::make_unique<AppWindow>();
     mVulkanInstance = std::make_unique<VulkanInstance>();
+    mPhysicalDevice = std::make_unique<VulkanPhysicalDevice>();
 }
 
 Game::~Game(){
@@ -41,6 +43,8 @@ void Game::Cleanup(){
 bool Game::InitVulkan(){
 
     if(!mVulkanInstance->SetupVulkanInstance()) { return false; }
+
+    if(!mPhysicalDevice->SetupPhysicalDevice(*mVulkanInstance)) { return false; }
 
     Logs::Print("All Vulkan Components Setup");
 

@@ -1,7 +1,9 @@
 #pragma once
 
-class VulkanInstance;
 class AppWindow;
+class VulkanInstance;
+class VulkanPhysicalDevice;
+
 
 class Game{
 public:
@@ -20,4 +22,5 @@ private:
 
     std::unique_ptr<AppWindow> mAppWindow;
     std::unique_ptr<VulkanInstance> mVulkanInstance;
+    std::unique_ptr<VulkanPhysicalDevice> mPhysicalDevice;
 };

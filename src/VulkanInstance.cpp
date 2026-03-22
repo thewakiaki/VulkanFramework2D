@@ -1,6 +1,7 @@
 #include "VulkanInstance.h"
 #include "Logs.h"
 
+
 VulkanInstance::VulkanInstance(){
 
 }
@@ -15,40 +16,41 @@ bool VulkanInstance::SetupVulkanInstance(){
     Logs::Print("Setting Up Vulkan Instance");
 
     if(!SetupExtensions()) { return false; }
+    if(!SetupLayers()) { return false; }
 
-    try {
-        mVulkanInstance = vk::createInstance(SetInstanceCreateInfo());
-        Logs::Print("Sucessfully Created Vulkan Instance");
+    SetInstanceCreateInfo();
 
+    VkResult result = vkCreateInstance(&mCreateInfo, nullptr, &mVulkanInstance);
+
+    if(result == VK_SUCCESS)
+    {
+        Logs::Print("Vulkan Instance created");
         return true;
-
-    } catch (const vk::SystemError& error) {
-        Logs::PrintError("Failed to create Vulkan Instance", error);
-
-        return false;
     }
+
+    Logs::PrintError("Failed to create Vulkan Instance");
+
+    return false;
 
 }
 
-vk::InstanceCreateInfo VulkanInstance::SetInstanceCreateInfo(){
-    vk::ApplicationInfo appInfo{
-        .pApplicationName = mGameName,
-        .applicationVersion = VK_MAKE_VERSION(1, 0, 0),
-        .pEngineName = mEngineName,
-        .engineVersion = VK_MAKE_VERSION(1, 0, 0),
-        .apiVersion = vk::ApiVersion14
-    };
+void VulkanInstance::SetInstanceCreateInfo(){
 
-    vk::InstanceCreateInfo createInfo{
-        .pApplicationInfo = &appInfo,
-        .enabledLayerCount = 0,
-        .ppEnabledLayerNames = nullptr,
-        .enabledExtensionCount = static_cast<uint32_t>(mRequiredExtensions.size()),
-        .ppEnabledExtensionNames = mRequiredExtensions.data()
-    };
+    mAppInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    mAppInfo.pNext = NULL;
+    mAppInfo.pApplicationName = mGameName;
+    mAppInfo.applicationVersion = VK_MAKE_VERSION(1, 0, 0);
+    mAppInfo.pEngineName = mEngineName;
+    mAppInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
+    mAppInfo.apiVersion = VK_API_VERSION_1_3;
 
-
-    return createInfo;
+    mCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
+    mCreateInfo.pNext = NULL;
+    mCreateInfo.pApplicationInfo = &mAppInfo;
+    mCreateInfo.enabledLayerCount = static_cast<uint32_t>(mValidatedLayers.size());
+    mCreateInfo.ppEnabledLayerNames = mValidatedLayers.data();
+    mCreateInfo.enabledExtensionCount = static_cast<uint32_t>(mValidatedExtensions.size());
+    mCreateInfo.ppEnabledExtensionNames = mValidatedExtensions.data();
 }
 
 bool VulkanInstance::SetupExtensions(){
@@ -63,37 +65,93 @@ bool VulkanInstance::SetupExtensions(){
     mAvailableExtensions.resize(mVkExtensionCount);
     vkEnumerateInstanceExtensionProperties(nullptr, &mVkExtensionCount, mAvailableExtensions.data());
 
-    mExtensionFlags.clear();
-    mExtensionFlags.reserve(mAvailableExtensions.size());
+    mValidatedExtensions.clear();
 
     for(const auto& ext : mAvailableExtensions) {
-        bool isRequired = false;
-
         for(const auto& required : mRequiredExtensions) {
                 if(std::strcmp(ext.extensionName, required) == 0) {
-                    isRequired = true;
+                    mValidatedExtensions.emplace_back(required);
                     break;
                 }
         }
-
-         mExtensionFlags.emplace_back(VulkanStructs::ExtensionFlags(ext, isRequired));
     }
 
-    ViewFlaggedExtensions();
+    if(mValidatedExtensions.size() != mRequiredExtensions.size()) {
+
+        Logs::PrintError("Not all required extensions supported");
+
+        return false;
+    }
+
+    ViewValidatedExtensions();
 
     return true;
 }
 
-void VulkanInstance::ViewFlaggedExtensions(){
+bool VulkanInstance::SetupLayers(){
+
+    if(!enableValidationLayers) {
+        mValidatedLayers.clear();
+        return true;
+    }
+
+    mRequiredLayers = { "VK_LAYER_KHRONOS_validation" };
+
+    vkEnumerateInstanceLayerProperties(&mVkLayerCount, nullptr);
+    mAvailableLayers.resize(mVkLayerCount);
+    vkEnumerateInstanceLayerProperties(&mVkLayerCount, mAvailableLayers.data());
+
+    mValidatedLayers.clear();
+
+
+    for(const auto& layer : mAvailableLayers) {
+        bool isRequired = false;
+
+        for(const auto& required : mRequiredLayers) {
+                if(std::strcmp(layer.layerName, required) == 0) {
+                    mValidatedLayers.emplace_back(required);
+                    break;
+                }
+        }
+    }
+
+    if(mValidatedLayers.size() != mRequiredLayers.size()) {
+
+        Logs::PrintError("Not all required layers supported");
+
+        return false;
+    }
+
+    ViewValidatedLayers();
+
+    return true;
+}
+
+void VulkanInstance::ViewValidatedExtensions(){
 
   Logs::Print("Added Extensions");
   Logs::Print("--------------------");
 
-  for(auto ext : mExtensionFlags)
+  for(auto ext : mValidatedExtensions)
   {
-      if(ext.enabled)
+      if(ext)
       {
-          Logs::Print(ext.extension.extensionName);
+          Logs::Print(ext);
+      }
+  }
+  Logs::Print("--------------------");
+}
+
+void VulkanInstance::ViewValidatedLayers(){
+
+  Logs::Print("Added Layers");
+  Logs::Print("--------------------");
+
+  for(auto Layer : mValidatedLayers)
+  {
+      if(Layer)
+      {
+          Logs::Print(Layer);
       }
   }
   Logs::Print("--------------------");
@@ -101,9 +159,9 @@ void VulkanInstance::ViewFlaggedExtensions(){
 
 void VulkanInstance::Cleanup(){
 
-    if(mVulkanInstance)
+    if(mVulkanInstance != VK_NULL_HANDLE)
     {
-        mVulkanInstance.destroy(nullptr);
-        mVulkanInstance = vk::Instance{};
+        vkDestroyInstance(mVulkanInstance, nullptr);
+        mVulkanInstance = VK_NULL_HANDLE;
     }
 }

@@ -2,10 +2,13 @@
 
 namespace VulkanStructs {
 
-    struct ExtensionFlags{
-        bool enabled = false;
-        VkExtensionProperties extension;
+    struct PhysicalDeviceDetails{
 
-        ExtensionFlags(VkExtensionProperties ext, bool flag) : extension(ext), enabled(flag) {}
+      VkPhysicalDevice device;
+      std::string deviceName;
+      uint32_t score;
+
+
+      PhysicalDeviceDetails(VkPhysicalDevice pDevice = VK_NULL_HANDLE, uint32_t scr = 0, std::string name = "") : device(pDevice), score(scr), deviceName(name) {}
     };
 }
