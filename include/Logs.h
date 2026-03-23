@@ -7,4 +7,6 @@ namespace Logs{
 
     void PrintError(const char* log);
     void PrintError(const char* log, const vk::SystemError& vkError);
+
+    void PrintComponentDestroyed(const char* component);
 }

@@ -62,13 +62,23 @@ bool VulkanLogicalDevice::GetQueues(const VulkanPhysicalDevice& pDevice){
 
     vkGetDeviceQueue(mLogicalDevice, static_cast<uint32_t>(pDevice.GetSelectedDevice().graphicsQueueIndex), 0, &mGraphicsQueue);
 
-    if(mGraphicsQueue != VK_NULL_HANDLE)
-    {
-        Logs::Print("Graphics Queue Retrieved");
-        return true;
+    if(mGraphicsQueue == VK_NULL_HANDLE){
+        Logs::Print("Failed to Retrieve Graphics Queue");
+        return false;
     }
 
-    return false;
+    Logs::Print("Graphics Queue Retrieved");
+
+    vkGetDeviceQueue(mLogicalDevice, static_cast<uint32_t>(pDevice.GetSelectedDevice().presentQueueIndex), 0, &mPresentQueue);
+
+    if(mPresentQueue == VK_NULL_HANDLE){
+        Logs::Print("Failed to Retrieve Present Queue");
+        return false;
+    }
+
+    Logs::Print("Present Queue Retrieved");
+
+    return true;
 }
 
 void VulkanLogicalDevice::Cleanup(){
@@ -76,6 +86,7 @@ void VulkanLogicalDevice::Cleanup(){
     if(mLogicalDevice != VK_NULL_HANDLE){
         vkDestroyDevice(mLogicalDevice, nullptr);
         mLogicalDevice = VK_NULL_HANDLE;
+        Logs::PrintComponentDestroyed("Logical Device");
     }
 
 }

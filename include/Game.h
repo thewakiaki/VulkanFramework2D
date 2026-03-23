@@ -1,7 +1,8 @@
 #pragma once
 
-class AppWindow;
+class GameWindow;
 class VulkanInstance;
+class WindowSurface;
 class VulkanPhysicalDevice;
 class VulkanLogicalDevice;
 
@@ -21,8 +22,9 @@ private:
 
     bool InitVulkan();
 
-    std::unique_ptr<AppWindow> mAppWindow;
+    std::unique_ptr<GameWindow> mGameWindow;
     std::unique_ptr<VulkanInstance> mVulkanInstance;
+    std::unique_ptr<WindowSurface> mWindowSurface;
     std::unique_ptr<VulkanPhysicalDevice> mPhysicalDevice;
     std::unique_ptr<VulkanLogicalDevice> mLogicalDevice;
 };

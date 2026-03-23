@@ -19,3 +19,7 @@ void Logs::PrintError(const char *log){
 void Logs::PrintError(const char *log, const vk::SystemError& vkError){
     std::cerr << log << ": " << vkError.what() << std::endl;
 }
+
+void Logs::PrintComponentDestroyed(const char *component){
+    std::cout << component << " Destroyed\n";
+}

@@ -1,15 +1,15 @@
-#include "AppWindow.h"
+#include "GameWindow.h"
 #include "Logs.h"
 
-AppWindow::AppWindow(){
+GameWindow::GameWindow(){
     mWindow = nullptr;
 }
 
-AppWindow::~AppWindow(){
+GameWindow::~GameWindow(){
     Cleanup();
 }
 
-bool AppWindow::SetupWindow(){
+bool GameWindow::SetupWindow(){
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -18,7 +18,7 @@ bool AppWindow::SetupWindow(){
     return MakeWindow();
 }
 
-bool AppWindow::MakeWindow(int width, int height, const char* title){
+bool GameWindow::MakeWindow(int width, int height, const char* title){
 
     mWindow = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
@@ -28,11 +28,15 @@ bool AppWindow::MakeWindow(int width, int height, const char* title){
         return false;
     }
 
+    Logs::Print("Window Created");
+
     return true;
 }
 
-void AppWindow::Cleanup(){
+void GameWindow::Cleanup(){
     glfwDestroyWindow(mWindow);
+
+    Logs::PrintComponentDestroyed("Window");
 
     glfwTerminate();
 }

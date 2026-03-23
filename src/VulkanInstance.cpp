@@ -55,11 +55,17 @@ void VulkanInstance::SetInstanceCreateInfo(){
 
 bool VulkanInstance::SetupExtensions(){
 
+    mRequiredExtensions.clear();
+
+    mGLFWExtensions = glfwGetRequiredInstanceExtensions(&mGLFWExtensionCount);
+
+    for(uint32_t extension = 0; extension < mGLFWExtensionCount; ++extension){
+        mRequiredExtensions.emplace_back(mGLFWExtensions[extension]);
+    }
+
     //Add required extensions here　/ ここで必須の拡張を設定してください
     //The base three are the required ones for any version of the framework / 下記の拡張は必要最低限の拡張です必ずこの３つをのこしてくたさい
-    mRequiredExtensions = { "VK_EXT_debug_utils", // Validation/Debugging / 検証・デバッグ用
-                            "VK_KHR_xcb_surface",
-                            "VK_KHR_surface" };
+    mRequiredExtensions.emplace_back("VK_EXT_debug_utils"); // Validation/Debugging / 検証・デバッグ用
 
     vkEnumerateInstanceExtensionProperties(nullptr, &mVkExtensionCount, nullptr);
     mAvailableExtensions.resize(mVkExtensionCount);
@@ -163,5 +169,6 @@ void VulkanInstance::Cleanup(){
     {
         vkDestroyInstance(mVulkanInstance, nullptr);
         mVulkanInstance = VK_NULL_HANDLE;
+        Logs::PrintComponentDestroyed("Vulkan Instance");
     }
 }

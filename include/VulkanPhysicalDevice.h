@@ -3,11 +3,12 @@
 #include "VulkanStructs.h"
 
 class VulkanInstance;
+class WindowSurface;
 
 class VulkanPhysicalDevice{
 
 public:
-    VulkanPhysicalDevice();
+    VulkanPhysicalDevice(WindowSurface& window);
     ~VulkanPhysicalDevice();
 
     VulkanPhysicalDevice(const VulkanInstance&) = delete;
@@ -35,14 +36,13 @@ private:
     void SetQueues();
 
     VulkanStructs::PhysicalDeviceDetails mSelectedDevice;
+    const WindowSurface& mWindowSurface;
 
     uint32_t mPhyiscalDeviceCount = 0;
     std::vector<VulkanStructs::PhysicalDeviceDetails> mAvailableDevices;
 
     std::vector<const char*> mRequiredExtensions;
 
-    VkQueue mGraphicsQueue;
-    VkQueue mPresentQueue;
     std::vector<VkDeviceQueueCreateInfo> mQueueCreateInfos;
 
 };

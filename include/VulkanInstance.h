@@ -40,6 +40,9 @@ private:
     std::vector<VkExtensionProperties> mAvailableExtensions;
     std::vector<const char*> mRequiredExtensions;
 
+    uint32_t mGLFWExtensionCount = 0;
+    const char** mGLFWExtensions;
+
     uint32_t mVkLayerCount = 0;
     std::vector<const char*> mValidatedLayers;
     std::vector<VkLayerProperties> mAvailableLayers;

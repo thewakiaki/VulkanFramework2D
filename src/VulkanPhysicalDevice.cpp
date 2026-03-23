@@ -2,8 +2,10 @@
 #include "Logs.h"
 
 #include "VulkanInstance.h"
+#include "WindowSurface.h"
 
-VulkanPhysicalDevice::VulkanPhysicalDevice(){
+
+VulkanPhysicalDevice::VulkanPhysicalDevice(WindowSurface& window) : mWindowSurface(window){
     mRequiredExtensions = {
         vk::KHRSwapchainExtensionName,
         vk::KHRSpirv14ExtensionName,
@@ -15,6 +17,7 @@ VulkanPhysicalDevice::VulkanPhysicalDevice(){
 
 VulkanPhysicalDevice::~VulkanPhysicalDevice(){
 
+    Logs::PrintComponentDestroyed("Physical Device");
 }
 
 bool VulkanPhysicalDevice::SetupPhysicalDevice(const VulkanInstance& instance){
@@ -183,26 +186,37 @@ bool VulkanPhysicalDevice::CheckQueueSupport(const VkPhysicalDevice& device, siz
     std::vector<VkQueueFamilyProperties> queueFamilies(familyCount);
     vkGetPhysicalDeviceQueueFamilyProperties(device, &familyCount, queueFamilies.data());
 
+    VkBool32 presentSupport = VK_FALSE;
+
     for(size_t i = 0; i < queueFamilies.size(); ++i)
     {
+        presentSupport = VK_FALSE;
+        vkGetPhysicalDeviceSurfaceSupportKHR(device, i, mWindowSurface.GetWindowSurface(), &presentSupport);
+
         if(queueFamilies[i].queueFlags & VK_QUEUE_GRAPHICS_BIT && graphicsQueueIndex == VulkanStructs::NO_FAMILY_INDEX) {
-            Logs::Print("Graphics Queue found at index " + std::to_string(i));
+            Logs::Print("Graphics Queue found at index: " + std::to_string(i));
             graphicsQueueIndex = i;
+            presentQueueIndex = i;
+
+            if(presentQueueIndex != VulkanStructs::NO_FAMILY_INDEX) { Logs::Print("Present Queue found at same index as Graphics index: " + std::to_string(i)); }
             return true;
         }
 
-        //VkBool32 presentSupport = VK_FALSE;
-        //vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface, &presentSupport);
-        //if(presentSupport && presentQueueIndex == VulkanStructs::NO_FAMILY_INDEX)
-        //{
-        //    Logs::Print("Present Queue found at index " + std::to_string(i));
-        //    presentQueueIndex = i;
-        //}
-        //
-        //if((presentQueueIndex != VulkanStructs::NO_FAMILY_INDEX) && (graphicsQueueIndex != VulkanStructs::NO_FAMILY_INDEX)) { return true;}
+        if(presentSupport && presentQueueIndex == VulkanStructs::NO_FAMILY_INDEX)
+        {
+            Logs::Print("Present Queue found at index " + std::to_string(i));
+            presentQueueIndex = i;
+        }
+
+        if((presentQueueIndex != VulkanStructs::NO_FAMILY_INDEX) && (graphicsQueueIndex != VulkanStructs::NO_FAMILY_INDEX)) { return true;}
     }
 
-    Logs::Print("Graphics Queue Not Supported");
+    if(presentQueueIndex == VulkanStructs::NO_FAMILY_INDEX) { Logs::PrintError("Present Queue Not Supported"); }
+
+    if(graphicsQueueIndex == VulkanStructs::NO_FAMILY_INDEX) { Logs::PrintError("Graphics Queue Not Supported"); }
+
+    Logs::PrintError("Failed to get queue indexes");
+
     return false;
 }
 
@@ -250,14 +264,14 @@ void VulkanPhysicalDevice::SetQueues(){
     mQueueCreateInfos.emplace_back(graphicsQueueCreateInfo);
 
 
-    //if(mSelectedDevice.graphicsQueueIndex != mSelectedDevice.presentQueueIndex) {
-    //    VkDeviceQueueCreateInfo presentQueueCreateInfo = graphicsQueueCreateInfo;
-    //    presentQueueCreateInfo.queueFamilyIndex = static_cast<uint32_t>(mSelectedDevice.presentQueueIndex);
-    //
-    //    mQueueCreateInfos.emplace_back(presentQueueCreateInfo);
-    //
-    //    shareMode = VK_SHARING_MODE_CONCURRENT;
-    //}
+    if(mSelectedDevice.graphicsQueueIndex != mSelectedDevice.presentQueueIndex) {
+        VkDeviceQueueCreateInfo presentQueueCreateInfo = graphicsQueueCreateInfo;
+        presentQueueCreateInfo.queueFamilyIndex = static_cast<uint32_t>(mSelectedDevice.presentQueueIndex);
 
-    //mSelectedDevice.shareMode = shareMode;
+        mQueueCreateInfos.emplace_back(presentQueueCreateInfo);
+
+        shareMode = VK_SHARING_MODE_CONCURRENT;
+    }
+
+    mSelectedDevice.shareMode = shareMode;
 }
