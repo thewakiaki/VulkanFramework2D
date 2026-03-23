@@ -2,6 +2,11 @@
 
 namespace VulkanStructs {
 
+    enum class QueueType{
+        GRAPHICS_QUEUE = 0,
+        PRESENT_QUEUE = 1
+    };
+
     constexpr size_t NO_FAMILY_INDEX = std::numeric_limits<size_t>::max();
 
     struct PhysicalDeviceDetails{

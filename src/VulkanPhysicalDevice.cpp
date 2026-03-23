@@ -23,6 +23,8 @@ bool VulkanPhysicalDevice::SetupPhysicalDevice(const VulkanInstance& instance){
 
     SelectBestDevice();
 
+    SetQueues();
+
     return true;
 }
 
@@ -90,21 +92,21 @@ bool VulkanPhysicalDevice::CheckDeviceProperties(const VkPhysicalDevicePropertie
 bool VulkanPhysicalDevice::CheckDeviceFeatures(const VkPhysicalDevice& device){
 
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extDynState{
-        .sType =  VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
-        .pNext = nullptr
-    };
+           .sType =  VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
+           .pNext = nullptr
+       };
 
-    VkPhysicalDeviceVulkan13Features vk13Features{
-        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
-        .pNext = &extDynState
-    };
+       VkPhysicalDeviceVulkan13Features vk13Features{
+           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
+           .pNext = &extDynState
+       };
 
-    VkPhysicalDeviceFeatures2 features2{
-        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
-        .pNext = &vk13Features
-    };
+       VkPhysicalDeviceFeatures2 features2{
+           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
+           .pNext = &vk13Features
+       };
 
-    vkGetPhysicalDeviceFeatures2(device, &features2);
+       vkGetPhysicalDeviceFeatures2(device, &features2);
 
     bool requiredFeatures = vk13Features.dynamicRendering && extDynState.extendedDynamicState;
 
@@ -235,7 +237,7 @@ bool VulkanPhysicalDevice::CheckExtensionSupport(const VkPhysicalDevice& device)
 
 void VulkanPhysicalDevice::SetQueues(){
     mQueueCreateInfos.clear();
-    float queuePriority = 1.0f;
+    float queuePriority = 0.5f;
     uint32_t familyCount = 0;
     VkSharingMode shareMode = VK_SHARING_MODE_EXCLUSIVE;
 
@@ -248,12 +250,14 @@ void VulkanPhysicalDevice::SetQueues(){
     mQueueCreateInfos.emplace_back(graphicsQueueCreateInfo);
 
 
-    if(mSelectedDevice.graphicsQueueIndex != mSelectedDevice.presentQueueIndex) {
-        VkDeviceQueueCreateInfo presentQueueCreateInfo = graphicsQueueCreateInfo;
-        presentQueueCreateInfo.queueFamilyIndex = static_cast<uint32_t>(mSelectedDevice.presentQueueIndex);
-        mQueueCreateInfos.emplace_back(presentQueueCreateInfo);
-        shareMode = VK_SHARING_MODE_CONCURRENT;
-    }
+    //if(mSelectedDevice.graphicsQueueIndex != mSelectedDevice.presentQueueIndex) {
+    //    VkDeviceQueueCreateInfo presentQueueCreateInfo = graphicsQueueCreateInfo;
+    //    presentQueueCreateInfo.queueFamilyIndex = static_cast<uint32_t>(mSelectedDevice.presentQueueIndex);
+    //
+    //    mQueueCreateInfos.emplace_back(presentQueueCreateInfo);
+    //
+    //    shareMode = VK_SHARING_MODE_CONCURRENT;
+    //}
 
-    mSelectedDevice.shareMode = shareMode;
+    //mSelectedDevice.shareMode = shareMode;
 }

@@ -3,6 +3,7 @@
 class AppWindow;
 class VulkanInstance;
 class VulkanPhysicalDevice;
+class VulkanLogicalDevice;
 
 
 class Game{
@@ -23,4 +24,5 @@ private:
     std::unique_ptr<AppWindow> mAppWindow;
     std::unique_ptr<VulkanInstance> mVulkanInstance;
     std::unique_ptr<VulkanPhysicalDevice> mPhysicalDevice;
+    std::unique_ptr<VulkanLogicalDevice> mLogicalDevice;
 };

@@ -15,8 +15,9 @@ public:
 
     bool SetupPhysicalDevice(const VulkanInstance& instance);
 
-    [[nodiscard]] const VulkanStructs::PhysicalDeviceDetails& GetSelectedDevice() const { return mSelectedDevice; }
-    [[nodiscard]] const std::vector<VkDeviceQueueCreateInfo>& GetQueueCreateInfo() const { return mQueueCreateInfos; }
+    const VulkanStructs::PhysicalDeviceDetails& GetSelectedDevice() const { return mSelectedDevice; }
+    const std::vector<VkDeviceQueueCreateInfo>& GetQueueCreateInfo() const { return mQueueCreateInfos; }
+    const std::vector<const char*>& GetRequiredExtensions() const { return mRequiredExtensions; }
 
 
 private:
