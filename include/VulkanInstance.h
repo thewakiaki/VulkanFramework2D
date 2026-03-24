@@ -1,7 +1,7 @@
 #pragma once
 
 //Change to false to disable validation layers // デバッグ用のレイヤーをいらない場合falseに変えてください
-constexpr bool enableValidationLayers = true;
+constexpr bool enableValidationLayers = false;
 
 class VulkanInstance{
 

@@ -2,6 +2,7 @@
 #include "Logs.h"
 
 #include "VulkanInstance.h"
+#include "VulkanPhysicalDevice.h"
 #include "GameWindow.h"
 
 WindowSurface::WindowSurface(VulkanInstance& instance, GameWindow& window) : mInstance(instance), mWindow(window){
@@ -15,19 +16,40 @@ WindowSurface::~WindowSurface(){
 }
 
 bool WindowSurface::SetupWindowSurface(){
+    Logs::Print("--------------------");
     Logs::Print("Setting up surface");
 
     VkResult result = glfwCreateWindowSurface(mInstance.GetInstance(), const_cast<GLFWwindow*>(mWindow.GetGameWindow()), nullptr, &mSurface);
 
-    if(result == VK_SUCCESS)
+    if(result != VK_SUCCESS)
     {
-        Logs::Print("Window Surface Created");
-        return true;
+        Logs::PrintError("Failed to create Window Surface");
+        return false;
     }
 
-    Logs::PrintError("Failed to create Window Surface");
+    Logs::Print("Window Surface Created");
+    Logs::Print("--------------------");
+    return true;
+}
 
-    return false;
+void WindowSurface::SetPhysicalDeviceSurfaceDetails(const VulkanPhysicalDevice& pDevice){
+
+    Logs::Print("--------------------");
+    Logs::Print("Setting surface details");
+
+    vkGetPhysicalDeviceSurfaceCapabilitiesKHR(pDevice.GetSelectedDevice().device, mSurface, &mCapabilities);
+
+    uint32_t formatCount;
+    vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice.GetSelectedDevice().device, mSurface, &formatCount, nullptr);
+    mFormats.resize(formatCount);
+    vkGetPhysicalDeviceSurfaceFormatsKHR(pDevice.GetSelectedDevice().device, mSurface, &formatCount, mFormats.data());
+
+    uint32_t presentModeCount;
+    vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice.GetSelectedDevice().device, mSurface, &presentModeCount, nullptr);
+    mAvailablePresentModes.resize(presentModeCount);
+    vkGetPhysicalDeviceSurfacePresentModesKHR(pDevice.GetSelectedDevice().device, mSurface, &presentModeCount, mAvailablePresentModes.data());
+
+    Logs::Print("--------------------");
 }
 
 void WindowSurface::Cleanup(){

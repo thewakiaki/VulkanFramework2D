@@ -14,6 +14,9 @@ VulkanLogicalDevice::~VulkanLogicalDevice(){
 
 bool VulkanLogicalDevice::SetupLogicalDevice(const VulkanPhysicalDevice& pDevice){
 
+    Logs::Print("--------------------");
+    Logs::Print("Setting up Logical Device");
+
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extDynState{
           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
           .pNext = nullptr,
@@ -46,13 +49,17 @@ bool VulkanLogicalDevice::SetupLogicalDevice(const VulkanPhysicalDevice& pDevice
         .pEnabledFeatures = nullptr
     };
 
+    ViewEnabledDeviceExtensions(mDeviceCreateInfo.ppEnabledExtensionNames, mDeviceCreateInfo.enabledExtensionCount);
+
     VkResult result = vkCreateDevice(pDevice.GetSelectedDevice().device, &mDeviceCreateInfo, nullptr, &mLogicalDevice);
 
     if(result == VK_SUCCESS)
     {
         Logs::Print("Logical Device Created");
+        Logs::Print("--------------------");
 
         return GetQueues(pDevice);
+        Logs::Print("--------------------");
     }
 
     return false;
@@ -79,6 +86,20 @@ bool VulkanLogicalDevice::GetQueues(const VulkanPhysicalDevice& pDevice){
     Logs::Print("Present Queue Retrieved");
 
     return true;
+}
+
+void VulkanLogicalDevice::ViewEnabledDeviceExtensions(const char* const* enabled, uint32_t size){
+
+    Logs::Print("--------------------");
+    Logs::Print("Enabled Device Extensions");
+    Logs::Print("--------------------");
+
+    for(int i = 0; i < size; ++i)
+    {
+        Logs::Print(enabled[i]);
+    }
+    Logs::Print("--------------------");
+
 }
 
 void VulkanLogicalDevice::Cleanup(){

@@ -25,6 +25,7 @@ add_executable(${PROJECT_NAME}
     src/WindowSurface.cpp
     src/VulkanPhysicalDevice.cpp
     src/VulkanLogicalDevice.cpp
+    src/VulkanSwapchain.cpp
 )
 
 set(PCH_INCLUDE_HEADERS pch.h)

@@ -5,6 +5,7 @@ class VulkanInstance;
 class WindowSurface;
 class VulkanPhysicalDevice;
 class VulkanLogicalDevice;
+class VulkanSwapchain;
 
 
 class Game{
@@ -27,4 +28,5 @@ private:
     std::unique_ptr<WindowSurface> mWindowSurface;
     std::unique_ptr<VulkanPhysicalDevice> mPhysicalDevice;
     std::unique_ptr<VulkanLogicalDevice> mLogicalDevice;
+    std::unique_ptr<VulkanSwapchain> mSwapchain;
 };

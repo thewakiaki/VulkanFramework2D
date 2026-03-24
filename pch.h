@@ -18,3 +18,4 @@
 #include <format>
 #include <exception>
 #include <cstdlib>
+#include <algorithm>

@@ -13,6 +13,7 @@ VulkanInstance::~VulkanInstance(){
 
 bool VulkanInstance::SetupVulkanInstance(){
 
+    Logs::Print("--------------------");
     Logs::Print("Setting Up Vulkan Instance");
 
     if(!SetupExtensions()) { return false; }
@@ -25,6 +26,7 @@ bool VulkanInstance::SetupVulkanInstance(){
     if(result == VK_SUCCESS)
     {
         Logs::Print("Vulkan Instance created");
+        Logs::Print("--------------------");
         return true;
     }
 
@@ -135,17 +137,18 @@ bool VulkanInstance::SetupLayers(){
 
 void VulkanInstance::ViewValidatedExtensions(){
 
-  Logs::Print("Added Extensions");
-  Logs::Print("--------------------");
+    Logs::Print("--------------------");
+    Logs::Print("Added Extensions");
+    Logs::Print("--------------------");
 
-  for(auto ext : mValidatedExtensions)
-  {
-      if(ext)
-      {
-          Logs::Print(ext);
-      }
-  }
-  Logs::Print("--------------------");
+    for(auto ext : mValidatedExtensions)
+    {
+        if(ext)
+        {
+            Logs::Print(ext);
+        }
+    }
+    Logs::Print("--------------------");
 }
 
 void VulkanInstance::ViewValidatedLayers(){

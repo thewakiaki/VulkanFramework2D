@@ -6,6 +6,7 @@
 #include "WindowSurface.h"
 #include "VulkanPhysicalDevice.h"
 #include "VulkanLogicalDevice.h"
+#include "VulkanSwapchain.h"
 
 Game::Game(){
     mGameWindow = std::make_unique<GameWindow>();
@@ -13,6 +14,7 @@ Game::Game(){
     mWindowSurface = std::make_unique<WindowSurface>(*mVulkanInstance, *mGameWindow);
     mPhysicalDevice = std::make_unique<VulkanPhysicalDevice>(*mWindowSurface);
     mLogicalDevice = std::make_unique<VulkanLogicalDevice>();
+    mSwapchain = std::make_unique<VulkanSwapchain>(*mLogicalDevice, *mWindowSurface, *mPhysicalDevice, *mGameWindow);
 }
 
 Game::~Game(){
@@ -43,11 +45,18 @@ bool Game::Play(){
 }
 
 void Game::Cleanup(){
+
+    Logs::Print("--------------------");
+    Logs::Print("Destroying Components");
+    Logs::Print("--------------------");
+    mSwapchain.reset();
     mLogicalDevice.reset();
     mPhysicalDevice.reset();
     mWindowSurface.reset();
     mVulkanInstance.reset();
     mGameWindow.reset();
+    Logs::Print("--------------------");
+
 }
 
 bool Game::InitVulkan(){
@@ -58,7 +67,11 @@ bool Game::InitVulkan(){
 
     if(!mPhysicalDevice->SetupPhysicalDevice(*mVulkanInstance)) { return false; }
 
+    mWindowSurface->SetPhysicalDeviceSurfaceDetails(*mPhysicalDevice);
+
     if(!mLogicalDevice->SetupLogicalDevice(*mPhysicalDevice)) { return false; }
+
+    if(!mSwapchain->SetupSwapchain()) { return false; }
 
     Logs::Print("All Vulkan Components Setup");
 

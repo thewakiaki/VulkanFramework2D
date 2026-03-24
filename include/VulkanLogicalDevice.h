@@ -13,11 +13,15 @@ public:
 
     bool SetupLogicalDevice(const VulkanPhysicalDevice& pDevice);
 
+    const VkDevice& GetLogicalDevice() const { return mLogicalDevice; }
+
 
 private:
     void Cleanup();
 
     bool GetQueues(const VulkanPhysicalDevice& pDevice);
+
+    void ViewEnabledDeviceExtensions(const char* const* enabled, uint32_t size);
 
     VkDevice mLogicalDevice = VK_NULL_HANDLE;
 

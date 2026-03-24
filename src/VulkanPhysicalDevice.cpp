@@ -21,12 +21,15 @@ VulkanPhysicalDevice::~VulkanPhysicalDevice(){
 }
 
 bool VulkanPhysicalDevice::SetupPhysicalDevice(const VulkanInstance& instance){
+    Logs::Print("Setting up Physical Device");
 
     if(!GetDeviceScores(instance)) { return false; }
 
     SelectBestDevice();
 
     SetQueues();
+
+    Logs::Print("Physical device Setup");
 
     return true;
 }

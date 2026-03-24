@@ -12,6 +12,9 @@ GameWindow::~GameWindow(){
 bool GameWindow::SetupWindow(){
     glfwInit();
 
+    Logs::Print("--------------------");
+    Logs::Print("Setting up Window");
+
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
@@ -29,6 +32,7 @@ bool GameWindow::MakeWindow(int width, int height, const char* title){
     }
 
     Logs::Print("Window Created");
+    Logs::Print("--------------------");
 
     return true;
 }
