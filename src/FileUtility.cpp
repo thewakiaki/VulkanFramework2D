@@ -1,21 +1,28 @@
 #include "FileUtility.h"
 
-std::vector<char> FileUtility::ParseFile(const std::string& fileName){
+#include "Logs.h"
 
-    std::string filepath = std::string(ShaderDirectory) + fileName;
+std::vector<char> FileUtility::ParseShaderFile(const std::string& filePath){
 
-    std::fstream file(filepath, std::ios::ate | std::ios::binary);
+    FILE* file = fopen(filePath.c_str(), "rb");
 
-    if(!file.is_open()){
-        throw std::runtime_error("Failed to open file");
+    if(!file){
+        throw std::runtime_error("Failed to open shader: " + filePath);
     }
 
-    std::vector<char> buffer(file.tellg());
+    fseek(file, 0, SEEK_END);
+    size_t size = ftell(file);
+    fseek(file, 0, SEEK_SET);
 
-    file.seekg(0, std::ios::beg);
-    file.read(buffer.data(), static_cast<std::streamsize>(buffer.size()));
+    std::vector<char> buffer(size);
 
-    file.close();
+    if(fread((buffer.data()), 1, size, file) != size)
+    {
+        fclose(file);
+        throw std::runtime_error("Incomplete shader read");
+    }
+
+    fclose(file);
 
     return buffer;
 }

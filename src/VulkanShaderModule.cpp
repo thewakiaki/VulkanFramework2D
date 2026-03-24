@@ -5,7 +5,8 @@
 
 #include "VulkanLogicalDevice.h"
 
-VulkanShaderModule::VulkanShaderModule(const VulkanLogicalDevice& device) : mLogicalDevice(device){
+VulkanShaderModule::VulkanShaderModule(const VulkanLogicalDevice& device , ShaderType type, std::string fileName)
+                                        : mLogicalDevice(device), mShaderType(type), mFilename(fileName){
 
 }
 
@@ -13,14 +14,11 @@ VulkanShaderModule::~VulkanShaderModule(){
     Cleanup();
 }
 
-bool VulkanShaderModule::SetupShaderModule(const VulkanLogicalDevice& device, const std::string& fileName, ShaderType type){
+bool VulkanShaderModule::SetupShaderModule(const VulkanLogicalDevice& device){
 
-    Logs::Print("--------------------");
     Logs::Print("Setting up Shader Module");
 
-    mShaderType = type;
-
-    if(!GetShaderCode(fileName)) { return false; }
+    if(!GetShaderCode(mFilename)) { return false; }
 
     size_t codeSize = mShaderCode.size() * sizeof(char);
 
@@ -36,13 +34,15 @@ bool VulkanShaderModule::SetupShaderModule(const VulkanLogicalDevice& device, co
 
     if(result == VK_SUCCESS)
     {
-        Logs::Print("Created Shader Module");
-        Logs::Print("--------------------");
+        std::string type = "";
+
+        mShaderType == ShaderType::VERTEX ? type = " VERTEX" : type = " FRAGMENT";
+
+        Logs::Print("Created Shader Module for: " + FileUtility::GetFileName(mFilename) + type);
         return true;
     }
 
-    Logs::PrintError("Failed to create shader module");
-    Logs::Print("--------------------");
+    Logs::PrintError("Failed to create shader module for: " + mFilename);
 
     return false;
 }
@@ -50,7 +50,7 @@ bool VulkanShaderModule::SetupShaderModule(const VulkanLogicalDevice& device, co
 bool VulkanShaderModule::GetShaderCode(const std::string& fileName){
     mShaderCode.clear();
 
-    mShaderCode = FileUtility::ParseFile(fileName);
+    mShaderCode = FileUtility::ParseShaderFile(fileName);
 
     if(mShaderCode.empty()){
         Logs::PrintError("Failed to read shader data");
@@ -58,4 +58,15 @@ bool VulkanShaderModule::GetShaderCode(const std::string& fileName){
     }
 
     return true;
+}
+
+void VulkanShaderModule::Cleanup(){
+
+    if(mShaderModule != VK_NULL_HANDLE)
+    {
+        vkDestroyShaderModule(mLogicalDevice.GetLogicalDevice(), mShaderModule, nullptr);
+        mShaderModule = VK_NULL_HANDLE;
+    }
+
+    Logs::PrintComponentDestroyed("Shader Module");
 }

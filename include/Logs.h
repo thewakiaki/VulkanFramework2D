@@ -6,6 +6,7 @@ namespace Logs{
     void Print(std::string_view log);
 
     void PrintError(const char* log);
+    void PrintError(std::string_view log);
     void PrintError(const char* log, const vk::SystemError& vkError);
 
     void PrintComponentDestroyed(const char* component);

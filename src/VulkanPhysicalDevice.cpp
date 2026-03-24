@@ -100,21 +100,26 @@ bool VulkanPhysicalDevice::CheckDeviceFeatures(const VkPhysicalDevice& device){
     VkPhysicalDeviceExtendedDynamicStateFeaturesEXT extDynState{
            .sType =  VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_EXTENDED_DYNAMIC_STATE_FEATURES_EXT,
            .pNext = nullptr
-       };
+    };
 
-       VkPhysicalDeviceVulkan13Features vk13Features{
+    VkPhysicalDeviceVulkan11Features vk11Features{
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES,
+        .pNext = &extDynState
+    };
+
+    VkPhysicalDeviceVulkan13Features vk13Features{
            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
-           .pNext = &extDynState
-       };
+           .pNext = &vk11Features
+    };
 
-       VkPhysicalDeviceFeatures2 features2{
+    VkPhysicalDeviceFeatures2 features2{
            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
            .pNext = &vk13Features
-       };
+    };
 
-       vkGetPhysicalDeviceFeatures2(device, &features2);
+    vkGetPhysicalDeviceFeatures2(device, &features2);
 
-    bool requiredFeatures = vk13Features.dynamicRendering && extDynState.extendedDynamicState;
+    bool requiredFeatures = vk13Features.dynamicRendering && extDynState.extendedDynamicState && vk11Features.shaderDrawParameters;
 
     if(!requiredFeatures) { Logs::PrintError("Required Features not supported"); }
 

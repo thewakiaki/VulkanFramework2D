@@ -23,9 +23,15 @@ bool VulkanLogicalDevice::SetupLogicalDevice(const VulkanPhysicalDevice& pDevice
           .extendedDynamicState = VK_TRUE,
     };
 
+    VkPhysicalDeviceVulkan11Features vk11Features{
+        .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_1_FEATURES,
+        .pNext = &extDynState,
+        .shaderDrawParameters = VK_TRUE
+    };
+
       VkPhysicalDeviceVulkan13Features vk13Features{
           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
-          .pNext = &extDynState,
+          .pNext = &vk11Features,
           .dynamicRendering = VK_TRUE,
     };
 

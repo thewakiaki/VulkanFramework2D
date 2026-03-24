@@ -20,6 +20,10 @@ void Logs::PrintError(const char *log, const vk::SystemError& vkError){
     std::cerr << log << ": " << vkError.what() << std::endl;
 }
 
+void Logs::PrintError(std::string_view log){
+    std::cerr << log << "\n";
+}
+
 void Logs::PrintComponentDestroyed(const char *component){
     std::cout << component << " Destroyed\n";
 }

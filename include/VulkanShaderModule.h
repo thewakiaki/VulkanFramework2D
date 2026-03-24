@@ -7,15 +7,17 @@ class VulkanLogicalDevice;
 class VulkanShaderModule{
 
 public:
-    VulkanShaderModule(const VulkanLogicalDevice& device);
+    VulkanShaderModule(const VulkanLogicalDevice& device, ShaderType type, std::string fileName);
     ~VulkanShaderModule();
 
     VulkanShaderModule(const VulkanShaderModule&) = delete;
     VulkanShaderModule& operator=(const VulkanShaderModule&) = delete;
 
-    bool SetupShaderModule(const VulkanLogicalDevice& device, const std::string& fileName, ShaderType type);
+    bool SetupShaderModule(const VulkanLogicalDevice& device);
 
     [[nodiscard]] const VkShaderModule& GetShaderModule() const { return mShaderModule; }
+
+    const ShaderType& GetShaderType() const { return mShaderType; }
 
 private:
     void Cleanup();
@@ -23,6 +25,8 @@ private:
     bool GetShaderCode(const std::string& fileName);
 
     VkShaderModule mShaderModule = VK_NULL_HANDLE;
+
+    std::string mFilename;
 
     std::vector<char> mShaderCode;
     ShaderType mShaderType;
