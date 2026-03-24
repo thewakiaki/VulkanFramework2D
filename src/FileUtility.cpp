@@ -1,7 +1,5 @@
 #include "FileUtility.h"
 
-#include "Logs.h"
-
 std::vector<char> FileUtility::ParseShaderFile(const std::string& filePath){
 
     FILE* file = fopen(filePath.c_str(), "rb");

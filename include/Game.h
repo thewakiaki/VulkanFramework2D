@@ -7,6 +7,7 @@ class VulkanPhysicalDevice;
 class VulkanLogicalDevice;
 class VulkanSwapchain;
 class VulkanPipeline;
+class VulkanCommandPool;
 
 
 class Game{
@@ -31,4 +32,5 @@ private:
     std::unique_ptr<VulkanLogicalDevice> mLogicalDevice;
     std::unique_ptr<VulkanSwapchain> mSwapchain;
     std::unique_ptr<VulkanPipeline> mPipeline;
+    std::unique_ptr<VulkanCommandPool> mCommandPool;
 };

@@ -50,6 +50,7 @@ add_executable(${PROJECT_NAME}
     src/VulkanLogicalDevice.cpp
     src/VulkanSwapchain.cpp
     src/VulkanPipeline.cpp
+    src/VulkanCommandPool.cpp
 )
 
 add_shader_compilation(BaseShader Assets/Shaders/shader.slang Assets/Shaders/slang.spv)

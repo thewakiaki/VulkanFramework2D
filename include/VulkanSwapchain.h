@@ -14,6 +14,10 @@ public:
     VulkanSwapchain(const VulkanSwapchain&) = delete;
     VulkanSwapchain& operator=(const VulkanSwapchain&) = delete;
 
+    const VkSwapchainKHR& GetSwapChain() const { return mSwapchain; }
+    const VkExtent2D& GetSwapchainExtent() const { return mSwapchainExtent; }
+    const VkSurfaceFormatKHR& GetSwapchainFormat() const { return mSwapSurfaceFormat; }
+
     bool SetupSwapchain();
 
 private:

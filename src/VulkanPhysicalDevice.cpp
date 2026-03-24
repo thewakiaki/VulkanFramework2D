@@ -21,6 +21,8 @@ VulkanPhysicalDevice::~VulkanPhysicalDevice(){
 }
 
 bool VulkanPhysicalDevice::SetupPhysicalDevice(const VulkanInstance& instance){
+
+    Logs::Print("--------------------");
     Logs::Print("Setting up Physical Device");
 
     if(!GetDeviceScores(instance)) { return false; }
@@ -30,6 +32,7 @@ bool VulkanPhysicalDevice::SetupPhysicalDevice(const VulkanInstance& instance){
     SetQueues();
 
     Logs::Print("Physical device Setup");
+    Logs::Print("--------------------");
 
     return true;
 }
