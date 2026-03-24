@@ -16,6 +16,8 @@ public:
 
    bool SetupPipeline();
 
+   const VkPipeline& GetPipeline() const { return mPipeline; }
+
 private:
     void Cleanup();
 

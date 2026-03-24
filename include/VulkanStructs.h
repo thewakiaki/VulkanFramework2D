@@ -19,4 +19,19 @@ namespace VulkanStructs {
                             device(pDevice), score(scr), deviceName(name), graphicsSupported(graphics),
                             graphicsQueueIndex(gIndex), presentQueueIndex(pIndex) {}
     };
+
+    struct ImageTransition{
+        VkImageLayout oldLayout;
+        VkImageLayout newLayout;
+        VkAccessFlags2 srcAccessMask;
+        VkAccessFlags2 dstAccessMask;
+        VkPipelineStageFlags2 srcStageMask;
+        VkPipelineStageFlags2 dstStageMask;
+
+        ImageTransition(VkImageLayout oLayout = VK_IMAGE_LAYOUT_UNDEFINED, VkImageLayout nLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                        VkAccessFlags2 srcAcc = VK_ACCESS_2_NONE, VkAccessFlags2 dstAcc = VK_ACCESS_2_COLOR_ATTACHMENT_WRITE_BIT,
+                        VkPipelineStageFlags2 srcStg = VK_PIPELINE_STAGE_2_TOP_OF_PIPE_BIT,
+                        VkPipelineStageFlags2 dstStg = VK_PIPELINE_STAGE_2_COLOR_ATTACHMENT_OUTPUT_BIT)
+                        : oldLayout(oLayout), newLayout(nLayout), srcAccessMask(srcAcc), dstAccessMask(dstAcc), srcStageMask(srcStg), dstStageMask(dstStg) {}
+    };
 }

@@ -17,6 +17,8 @@ public:
     const VkSwapchainKHR& GetSwapChain() const { return mSwapchain; }
     const VkExtent2D& GetSwapchainExtent() const { return mSwapchainExtent; }
     const VkSurfaceFormatKHR& GetSwapchainFormat() const { return mSwapSurfaceFormat; }
+    const std::vector<VkImage>& GetSwapchainImages() const { return mSwapchainImages; }
+    const std::vector<VkImageView>& GetSwapchainImageViews() const { return mSwapchainImageViews; }
 
     bool SetupSwapchain();
 

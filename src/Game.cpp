@@ -18,7 +18,7 @@ Game::Game(){
     mLogicalDevice = std::make_unique<VulkanLogicalDevice>();
     mSwapchain = std::make_unique<VulkanSwapchain>(*mLogicalDevice, *mWindowSurface, *mPhysicalDevice, *mGameWindow);
     mPipeline = std::make_unique<VulkanPipeline>(*mLogicalDevice, *mSwapchain);
-    mCommandPool = std::make_unique<VulkanCommandPool>(*mLogicalDevice, *mPhysicalDevice);
+    mCommandPool = std::make_unique<VulkanCommandPool>(*mLogicalDevice, *mPhysicalDevice, *mSwapchain, *mPipeline);
 }
 
 Game::~Game(){
@@ -82,6 +82,8 @@ bool Game::InitVulkan(){
     if(!mPipeline->SetupPipeline()){ return false;}
 
     if(!mCommandPool->SetupCommandPool()) { return false; }
+
+    if(!mCommandPool->SetupCommandBuffer()) { return false; }
 
     Logs::Print("All Vulkan Components Setup");
 
