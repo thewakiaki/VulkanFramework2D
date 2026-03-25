@@ -30,7 +30,7 @@ bool VulkanInstance::SetupVulkanInstance(){
         return true;
     }
 
-    Logs::PrintError("Failed to create Vulkan Instance");
+    Logs::PrintError("Failed to create Vulkan Instance", result);
 
     return false;
 

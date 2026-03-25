@@ -9,6 +9,7 @@
 #include "VulkanSwapchain.h"
 #include "VulkanPipeline.h"
 #include "VulkanCommandPool.h"
+#include "VulkanRenderer.h"
 
 Game::Game(){
     mGameWindow = std::make_unique<GameWindow>();
@@ -19,6 +20,7 @@ Game::Game(){
     mSwapchain = std::make_unique<VulkanSwapchain>(*mLogicalDevice, *mWindowSurface, *mPhysicalDevice, *mGameWindow);
     mPipeline = std::make_unique<VulkanPipeline>(*mLogicalDevice, *mSwapchain);
     mCommandPool = std::make_unique<VulkanCommandPool>(*mLogicalDevice, *mPhysicalDevice, *mSwapchain, *mPipeline);
+    mRenderer = std::make_unique<VulkanRenderer>(*mLogicalDevice, *mSwapchain, *mCommandPool);
 }
 
 Game::~Game(){
@@ -28,6 +30,8 @@ Game::~Game(){
 bool Game::Run(){
 
     if(!Startup()) { return false;}
+
+    if(!Play()) { return false; }
 
     return false;
 }
@@ -45,6 +49,20 @@ bool Game::Startup(){
 
 bool Game::Play(){
 
+    while (!glfwWindowShouldClose(mGameWindow->GetGameWindow())) {
+
+            glfwPollEvents();
+
+            if (glfwGetKey(mGameWindow->GetGameWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+                    glfwSetWindowShouldClose(mGameWindow->GetGameWindow(), true);
+                    break;
+                }
+
+            vkDeviceWaitIdle(mLogicalDevice->GetLogicalDevice());
+            mRenderer->DrawFrame();
+
+        }
+
     return true;
 }
 
@@ -53,6 +71,7 @@ void Game::Cleanup(){
     Logs::Print("--------------------");
     Logs::Print("Destroying Components");
     Logs::Print("--------------------");
+    mRenderer.reset();
     mCommandPool.reset();
     mPipeline.reset();
     mSwapchain.reset();
@@ -84,6 +103,8 @@ bool Game::InitVulkan(){
     if(!mCommandPool->SetupCommandPool()) { return false; }
 
     if(!mCommandPool->SetupCommandBuffer()) { return false; }
+
+    if(!mRenderer->SetupRenderer()) { return false; }
 
     Logs::Print("All Vulkan Components Setup");
 

@@ -20,6 +20,10 @@ void Logs::PrintError(const char *log, const vk::SystemError& vkError){
     std::cerr << log << ": " << vkError.what() << std::endl;
 }
 
+void Logs::PrintError(const char *log, const VkResult& result){
+    std::cerr << log << ": " << string_VkResult(result) << std::endl;
+}
+
 void Logs::PrintError(std::string_view log){
     std::cerr << log << "\n";
 }

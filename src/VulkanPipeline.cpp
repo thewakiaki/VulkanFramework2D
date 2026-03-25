@@ -53,7 +53,7 @@ bool VulkanPipeline::SetupPipeline(){
 
     if(result != VK_SUCCESS){
 
-        Logs::PrintError("Failed to create pipeline layout");
+        Logs::PrintError("Failed to create pipeline layout", result);
         return false;
     }
 
@@ -84,7 +84,7 @@ bool VulkanPipeline::SetupPipeline(){
 
     if(result != VK_SUCCESS){
 
-        Logs::PrintError("Failed to create Graphics Pipeline");
+        Logs::PrintError("Failed to create Graphics Pipeline", result);
         return false;
     }
 

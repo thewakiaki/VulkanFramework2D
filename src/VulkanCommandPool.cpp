@@ -42,7 +42,7 @@ bool VulkanCommandPool::SetupCommandPool(){
 
     if(result != VK_SUCCESS)
     {
-        Logs::PrintError("Failed to Create Command Pool");
+        Logs::PrintError("Failed to Create Command Pool", result);
         return false;
     }
 
@@ -69,7 +69,7 @@ bool VulkanCommandPool::SetupCommandBuffer(){
 
     if(result != VK_SUCCESS)
     {
-        Logs::PrintError("Failed to allocate Command Buffer");
+        Logs::PrintError("Failed to allocate Command Buffer", result);
         return false;
     }
 
@@ -89,13 +89,14 @@ bool VulkanCommandPool::RecordCommandBuffer(uint32_t imageIndex){
 
     if(result != VK_SUCCESS)
     {
-        Logs::PrintError("Failed to begin recording Command Buffer");
+        Logs::PrintError("Failed to begin recording Command Buffer" , result);
         return false;
     }
 
     TransitionImageLayout(imageIndex, mStartImageTransition);
 
-    VkRenderingInfo renderInfo = SetRenderingInfo(imageIndex);
+    VkRenderingAttachmentInfo attachmentInfo = SetRenderAttachmentInfo(imageIndex);
+    VkRenderingInfo renderInfo = SetRenderingInfo(imageIndex, attachmentInfo);
 
     vkCmdBeginRendering(mCommandBuffer, &renderInfo);
 
@@ -132,9 +133,7 @@ VkCommandBufferBeginInfo VulkanCommandPool::SetCommandBeginInfo(){
     return info;
 }
 
-VkRenderingInfo VulkanCommandPool::SetRenderingInfo(uint32_t imageIndex){
-
-    VkRenderingAttachmentInfo attachInfo = SetRenderAttachmentInfo(imageIndex);
+VkRenderingInfo VulkanCommandPool::SetRenderingInfo(uint32_t imageIndex, VkRenderingAttachmentInfo& attachInfo){
 
     VkRenderingInfo info{
         .sType = VK_STRUCTURE_TYPE_RENDERING_INFO,

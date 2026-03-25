@@ -29,17 +29,21 @@ bool VulkanLogicalDevice::SetupLogicalDevice(const VulkanPhysicalDevice& pDevice
         .shaderDrawParameters = VK_TRUE
     };
 
-      VkPhysicalDeviceVulkan13Features vk13Features{
+    VkPhysicalDeviceVulkan13Features vk13Features{
           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_3_FEATURES,
           .pNext = &vk11Features,
-          .dynamicRendering = VK_TRUE,
+          .synchronization2 = VK_TRUE,
+          .dynamicRendering = VK_TRUE
     };
 
     VkPhysicalDeviceFeatures2 features2{
           .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2,
           .pNext = &vk13Features,
     };
+
     features2.features.samplerAnisotropy = VK_TRUE;
+    //features2.features.tessellationShader = VK_TRUE;
+    features2.features.geometryShader = VK_TRUE;
 
 
     VkDeviceCreateInfo mDeviceCreateInfo{
@@ -67,6 +71,9 @@ bool VulkanLogicalDevice::SetupLogicalDevice(const VulkanPhysicalDevice& pDevice
         return GetQueues(pDevice);
         Logs::Print("--------------------");
     }
+
+    Logs::PrintError("Failed to create Logicla Device", result);
+    Logs::Print("--------------------");
 
     return false;
 }

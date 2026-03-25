@@ -23,7 +23,7 @@ bool WindowSurface::SetupWindowSurface(){
 
     if(result != VK_SUCCESS)
     {
-        Logs::PrintError("Failed to create Window Surface");
+        Logs::PrintError("Failed to create Window Surface", result);
         return false;
     }
 

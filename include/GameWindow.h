@@ -8,7 +8,7 @@ public:
     GameWindow(const GameWindow&) = delete;
     GameWindow& operator=(const GameWindow&) = delete;
 
-    const GLFWwindow* GetGameWindow() const { return mWindow; }
+    GLFWwindow* GetGameWindow() const { return mWindow; }
 
     bool SetupWindow();
 

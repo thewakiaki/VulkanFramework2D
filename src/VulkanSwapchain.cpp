@@ -44,7 +44,7 @@ bool VulkanSwapchain::SetupSwapchain(){
          return true;
      }
 
-     Logs::PrintError("Failed to Create Swapchain");
+     Logs::PrintError("Failed to Create Swapchain", result);
 
      Logs::Print("--------------------");
      return false;
@@ -227,7 +227,7 @@ bool VulkanSwapchain::RetriveSwapchainImages(){
     VkResult result = vkGetSwapchainImagesKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain, &SwapchainImageCount, nullptr);
 
     if(result != VK_SUCCESS && result != VK_INCOMPLETE){
-        Logs::PrintError("Failed to get Swapchain Images: No Image Count");
+        Logs::PrintError("Failed to get Swapchain Images: No Image Count", result);
         Logs::Print("--------------------");
         return false;
     }
@@ -236,7 +236,7 @@ bool VulkanSwapchain::RetriveSwapchainImages(){
     result = vkGetSwapchainImagesKHR(mLogicalDevice.GetLogicalDevice(), mSwapchain, &SwapchainImageCount, mSwapchainImages.data());
 
     if(result != VK_SUCCESS && result != VK_INCOMPLETE){
-        Logs::PrintError("Failed to get image array");
+        Logs::PrintError("Failed to get image array", result);
         Logs::Print("--------------------");
         return false;
     }
@@ -272,7 +272,7 @@ bool VulkanSwapchain::CreateSwapchainImageViews(){
 
         if(result != VK_SUCCESS)
         {
-            Logs::PrintError("Failed to create image view");
+            Logs::PrintError("Failed to create image view", result);
             return false;
         }
     }

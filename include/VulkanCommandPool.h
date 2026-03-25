@@ -22,13 +22,13 @@ public:
     bool RecordCommandBuffer(uint32_t imageIndex);
 
     const VkCommandPool& GetCommandPool() const { return mCommandPool; }
-    const VkCommandBuffer GetCommandBuffer() const { return mCommandBuffer; }
+    const VkCommandBuffer& GetCommandBuffer() const { return mCommandBuffer; }
 
 private:
     void Cleanup();
 
     VkCommandBufferBeginInfo SetCommandBeginInfo();
-    VkRenderingInfo SetRenderingInfo(uint32_t imageIndex);
+    VkRenderingInfo SetRenderingInfo(uint32_t imageIndex, VkRenderingAttachmentInfo& attachInfo);
     VkRenderingAttachmentInfo SetRenderAttachmentInfo(uint32_t imageIndex);
 
     void TransitionImageLayout(uint32_t imageIndex, VulkanStructs::ImageTransition& imageTransition);

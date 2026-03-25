@@ -43,6 +43,7 @@ bool VulkanShaderModule::SetupShaderModule(const VulkanLogicalDevice& device){
     }
 
     Logs::PrintError("Failed to create shader module for: " + mFilename);
+    Logs::PrintError("Error type", result);
 
     return false;
 }
